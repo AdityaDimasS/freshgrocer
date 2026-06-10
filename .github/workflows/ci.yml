@@ -63,7 +63,7 @@ jobs:
       # 8. Run PHPUnit Tests
       - name: PHP Unit & Integration Testing
         working-directory: frontend
-        run: vendor/bin/phpunit
+        run: php vendor/bin/phpunit
 
       # 9. Install Node.js
       - name: Setup Node.js
