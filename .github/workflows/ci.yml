@@ -73,16 +73,10 @@ jobs:
         with:
           node-version: '20'
 
-      # 11. Install Node Dependencies
-      - name: Install Node Dependencies
-        working-directory: frontend
-        run: npm install
-
-      # 12. Run Cypress End-to-End Test
+      # 11. Run Cypress End-to-End Test
       - name: Cypress Run
         uses: cypress-io/github-action@v6
         with:
           working-directory: frontend
-          install: false
           browser: chrome
           wait-on: "http://localhost:8000"
