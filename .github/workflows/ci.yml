@@ -20,7 +20,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '21'
 
       # 3. Setup PHP
@@ -35,48 +35,54 @@ jobs:
         working-directory: frontend
         run: composer install
 
-      # 5. Start Java Backend
+      # 5. Compile Java Backend
       - name: Compile Backend
         working-directory: backend/src
-        run: javac Main.java OrderHandler.java
+        run: |
+          javac Main.java OrderHandler.java OrderHandlerTest.java
 
+      # 6. Start Java Backend
       - name: Start Backend Server
         working-directory: backend/src
         run: |
           java Main &
           sleep 5
 
-      # 6. Start PHP Server
+      # 7. Start PHP Server
       - name: Start PHP Server
         working-directory: frontend
         run: |
           php -S localhost:8000 &
           sleep 5
 
-      # 7. Run Java Unit Test
+      # 8. Java Unit Testing
       - name: Java Unit Testing
         working-directory: backend/src
         run: |
-          javac OrderHandlerTest.java
           java OrderHandlerTest
 
-      # 8. Run PHPUnit Tests
+      # 9. PHP Unit & Integration Testing
       - name: PHP Unit & Integration Testing
         working-directory: frontend
-        run: php vendor/bin/phpunit
+        run: |
+          php vendor/bin/phpunit
 
-      # 9. Install Node.js
+      # 10. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 10. Install Cypress
-      - name: Install Cypress
+      # 11. Install Node Dependencies
+      - name: Install Node Dependencies
         working-directory: frontend
         run: npm install
 
-      # 11. Run End-to-End Test
-      - name: Run Cypress
-        working-directory: frontend
-        run: npx cypress run --headless
+      # 12. Run Cypress End-to-End Test
+      - name: Cypress Run
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: frontend
+          install: false
+          browser: chrome
+          wait-on: "http://localhost:8000"
